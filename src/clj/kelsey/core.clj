@@ -5,7 +5,7 @@
 
 (def arrayInitParser (gen/parser :net.frenata.ArrayInit.ArrayInit))
 
-(defn -main [input]
+(defn tree [input]
   (let [parser (arrayInitParser input)
         tree (.init parser)]
 
@@ -24,7 +24,7 @@
                     (Integer/valueOf))]
         (swap! mem (partial + val))))))
 
-(defn -main2 [input]
+(defn sum [input]
   (let [parser (arrayInitParser input)
         tree (.init parser)
         mem (atom 0)

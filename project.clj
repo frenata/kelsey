@@ -20,5 +20,5 @@
                    :source-paths ["dev"]
                    :dependencies [[org.clojure/test.check "0.9.0"]]}}
 
-  :aliases {"tree" ["run" "-m" "kelsey.core/-main"]
-            "sum"  ["run" "-m" "kelsey.core/-main2"]})
+  :aliases {"tree" ["run" "-m" "kelsey.core/tree"]
+            "sum"  ["run" "-m" "kelsey.core/sum"]})
