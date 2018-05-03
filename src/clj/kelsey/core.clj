@@ -1,9 +1,9 @@
 (ns kelsey.core
   (:require [kelsey.generate :as gen])
-  (:import (net.frenata.ArrayInit ArrayInitBaseListener)
+  (:import (net.frenata.kelsey ArrayInitBaseListener)
            (org.antlr.v4.runtime.tree ParseTreeWalker)))
 
-(def arrayInitParser (gen/parser :net.frenata.ArrayInit.ArrayInit))
+(def arrayInitParser (gen/parser :net.frenata.kelsey.ArrayInit))
 
 (defn tree [input]
   (let [parser (arrayInitParser input)
