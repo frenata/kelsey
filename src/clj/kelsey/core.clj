@@ -1,6 +1,7 @@
 (ns kelsey.core
   (:require [kelsey.generate :as gen])
-  (:import (net.frenata.kelsey ArrayInitBaseListener)
+  (:import (net.frenata.kelsey ArrayInitBaseListener
+                               )
            (org.antlr.v4.runtime.tree ParseTreeWalker)))
 
 (def arrayInitParser (gen/parser :net.frenata.kelsey.ArrayInit))
@@ -32,3 +33,8 @@
 
     (.walk walker (short->unicode mem) tree)
     (println @mem)))
+
+(defn csv [input]
+  (let [parser ((gen/parser :net.frenata.kelsey.CSV) input)
+        tree (.file parser)]
+    (println (.toStringTree tree parser))))
