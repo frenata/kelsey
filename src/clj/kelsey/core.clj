@@ -31,4 +31,4 @@
         walker (ParseTreeWalker.)]
 
     (.walk walker (short->unicode mem) tree)
-    @mem))
+    (println @mem)))

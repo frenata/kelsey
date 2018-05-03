@@ -18,4 +18,7 @@
 
   :profiles {:dev {:jvm-opts ["-Xmx1g"]
                    :source-paths ["dev"]
-                   :dependencies [[org.clojure/test.check "0.9.0"]]}})
+                   :dependencies [[org.clojure/test.check "0.9.0"]]}}
+
+  :aliases {"tree" ["run" "-m" "kelsey.core/-main"]
+            "sum"  ["run" "-m" "kelsey.core/-main2"]})
