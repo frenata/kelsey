@@ -38,3 +38,13 @@
   (let [parser ((gen/parser :net.frenata.kelsey.CSV) input)
         tree (.file parser)]
     (println (.toStringTree tree parser))))
+
+(defn json [input]
+  (let [parser ((gen/parser :net.frenata.kelsey.JSON) input)
+        tree (.json parser)]
+    (println (.toStringTree tree parser))))
+
+(defn dot [input]
+  (let [parser ((gen/parser :net.frenata.kelsey.Dot) input)
+        tree (.graph parser)]
+    (println (.toStringTree tree parser))))
