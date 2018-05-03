@@ -16,6 +16,8 @@
   :antlr-dest-dir "src/java/net/frenata/ArrayInit"
   :antlr-options {:package "net.frenata.ArrayInit"}
 
+  :main kelsey.core
+
   :profiles {:dev {:jvm-opts ["-Xmx1g"]
                    :source-paths ["dev"]
                    :dependencies [[org.clojure/test.check "0.9.0"]]}}
