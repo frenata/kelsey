@@ -1,3 +1,6 @@
 grammar Cymbol ;
 
-file : (functionDecl | varDecl)+ ;
+//file : (functionDecl | varDecl)+ ;
+ws : WS ;
+
+WS : [ \t\r\n]+ -> skip ;

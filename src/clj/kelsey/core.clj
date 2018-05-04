@@ -1,10 +1,13 @@
 (ns kelsey.core
-  (:require [kelsey.generate :as gen])
+  (:require [kelsey.generate :as gen]
+            [clojure.java.io :as io])
   (:import (net.frenata.kelsey ArrayInitBaseListener
                                )
            (org.antlr.v4.runtime.tree ParseTreeWalker)))
 
 (def arrayInitParser (gen/parser :net.frenata.kelsey.ArrayInit))
+
+(def slurrp (comp slurp io/resource))
 
 (defn tree [input]
   (let [parser (arrayInitParser input)
@@ -47,4 +50,9 @@
 (defn dot [input]
   (let [parser ((gen/parser :net.frenata.kelsey.Dot) input)
         tree (.graph parser)]
+    (println (.toStringTree tree parser))))
+
+(defn prop [input]
+  (let [parser ((gen/parser :net.frenata.kelsey.Prop) input)
+        tree (.file parser)]
     (println (.toStringTree tree parser))))
