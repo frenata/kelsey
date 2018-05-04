@@ -2,7 +2,8 @@
   (:require [kelsey.generate :as gen]
             [clojure.java.io :as io])
   (:import (net.frenata.kelsey ArrayInitBaseListener
-                               PropBaseListener)
+                               PropBaseListener
+                               PropBaseVisitor)
            (org.antlr.v4.runtime.tree ParseTreeWalker)))
 
 (def arrayInitParser (gen/parser :net.frenata.kelsey.ArrayInit))
@@ -58,19 +59,15 @@
         tree (.graph parser)]
     (println (.toStringTree tree parser))))
 
+;; accumulating properties with the listener pattern
+;; and a closure over an atom
+
 (defn collect-props [props]
   (proxy [PropBaseListener] []
     (exitProp [ctx]
       (let [id (-> ctx .ID .getText keyword)
             val (-> ctx .STRING .getText stripQuotes)]
         (swap! props #(assoc % id val))))))
-
-(defn return-props [props]
-  (proxy [PropBaseVisitor] []
-    (visitProp [ctx]
-      (let [id (-> ctx .ID .getText keyword)
-            val (-> ctx .STRING .getText stripQuotes)]
-        {id val}))))
 
 (defn prop [input]
   (let [parser ((gen/parser :net.frenata.kelsey.Prop) input)
@@ -80,3 +77,19 @@
 
     (.walk walker (collect-props props) tree)
     @props))
+
+;; accumulating properties with the visitor pattern
+
+(defn return-props []
+  (proxy [PropBaseVisitor] []
+    (visitProp [ctx]
+      (let [id (-> ctx .ID .getText keyword)
+            val (-> ctx .STRING .getText stripQuotes)]
+        {id val}))
+    (aggregateResult [acc m]
+      (merge acc m))))
+
+(defn prop-visit [input]
+  (let [parser ((gen/parser :net.frenata.kelsey.Prop) input)
+        tree (.file parser)]
+    (.visit (return-props) tree)))

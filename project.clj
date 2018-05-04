@@ -15,8 +15,8 @@
   :prep-tasks [["antlr"] "javac" "compile"]
   :antlr-src-dir "src/antlr"
   :antlr-dest-dir "src/java/net/frenata/kelsey"
-  :antlr-options {:package "net.frenata.kelsey"}
-
+  :antlr-options {:package "net.frenata.kelsey"
+                  :visitor true}
 
   :profiles {:dev {:jvm-opts ["-Xmx1g"]
                    :source-paths ["dev"]
