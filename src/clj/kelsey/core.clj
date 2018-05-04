@@ -2,12 +2,18 @@
   (:require [kelsey.generate :as gen]
             [clojure.java.io :as io])
   (:import (net.frenata.kelsey ArrayInitBaseListener
-                               )
+                               PropBaseListener)
            (org.antlr.v4.runtime.tree ParseTreeWalker)))
 
 (def arrayInitParser (gen/parser :net.frenata.kelsey.ArrayInit))
 
-(def slurrp (comp slurp io/resource))
+(def ^:private slurrp (comp slurp io/resource))
+
+(defn- stripQuotes [s]
+  (let [[f l] ((juxt first last) s)]
+    (if (= f l \")
+      (subs s 1 (dec (count s)))
+      s)))
 
 (defn tree [input]
   (let [parser (arrayInitParser input)
@@ -52,7 +58,25 @@
         tree (.graph parser)]
     (println (.toStringTree tree parser))))
 
+(defn collect-props [props]
+  (proxy [PropBaseListener] []
+    (exitProp [ctx]
+      (let [id (-> ctx .ID .getText keyword)
+            val (-> ctx .STRING .getText stripQuotes)]
+        (swap! props #(assoc % id val))))))
+
+(defn return-props [props]
+  (proxy [PropBaseVisitor] []
+    (visitProp [ctx]
+      (let [id (-> ctx .ID .getText keyword)
+            val (-> ctx .STRING .getText stripQuotes)]
+        {id val}))))
+
 (defn prop [input]
   (let [parser ((gen/parser :net.frenata.kelsey.Prop) input)
-        tree (.file parser)]
-    (println (.toStringTree tree parser))))
+        tree (.file parser)
+        props (atom {})
+        walker (ParseTreeWalker.)]
+
+    (.walk walker (collect-props props) tree)
+    @props))
