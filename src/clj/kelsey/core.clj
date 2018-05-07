@@ -3,7 +3,8 @@
             [clojure.java.io :as io])
   (:import (net.frenata.kelsey ArrayInitBaseListener
                                PropBaseListener
-                               PropBaseVisitor)
+                               PropBaseVisitor
+                               ExprBaseVisitor)
            (org.antlr.v4.runtime.tree ParseTreeWalker)))
 
 (def arrayInitParser (gen/parser :net.frenata.kelsey.ArrayInit))
@@ -93,3 +94,28 @@
   (let [parser ((gen/parser :net.frenata.kelsey.Prop) input)
         tree (.file parser)]
     (.visit (return-props) tree)))
+
+;; eval caluclator
+
+(defmacro visit [body]
+  `(.visit ~'this (~@body)))
+
+(defn return-expr []
+  (proxy [ExprBaseVisitor] []
+    (visitMult [ctx]
+      (let [x (visit (.e ctx 0))
+            y (visit (.e ctx 1))]
+        (* x y)))
+
+    (visitAdd [ctx]
+      (let [x (visit (.e ctx 0))
+            y (visit (.e ctx 1))]
+        (+ x y)))
+
+    (visitInt [ctx]
+      (-> ctx .INT .getText (Integer/valueOf)))))
+
+(defn expr [input]
+  (let [parser ((gen/parser :net.frenata.kelsey.Expr) input)
+        tree (.s parser)]
+    (.visit (return-expr) tree)))
