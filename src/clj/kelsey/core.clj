@@ -1,5 +1,5 @@
 (ns kelsey.core
-  (:require [kelsey.generate :as gen]
+  (:require [kelsey.generate :refer [visit] :as gen]
             [clojure.java.io :as io])
   (:import (net.frenata.kelsey ArrayInitBaseListener
                                PropBaseListener
@@ -25,10 +25,6 @@
 
 (defn short->unicode [mem]
   (proxy [ArrayInitBaseListener] []
-    #_(enterInit [ctx]
-      (print \"))
-    #_(exitInit [ctx]
-      (print \"))
     (enterValue [ctx]
       (let [val (-> ctx
                     (.INT)
@@ -97,20 +93,26 @@
 
 ;; eval caluclator
 
-(defmacro visit [body]
-  `(.visit ~'this (~@body)))
-
 (defn return-expr []
   (proxy [ExprBaseVisitor] []
     (visitMult [ctx]
-      (let [x (visit (.e ctx 0))
-            y (visit (.e ctx 1))]
-        (* x y)))
+      (let [x (visit .e 0)
+            y (visit .e 1)]
+
+        (cond (.MUL ctx)
+              (* x y)
+
+              (.DIV ctx)
+              (/ x y))))
 
     (visitAdd [ctx]
-      (let [x (visit (.e ctx 0))
-            y (visit (.e ctx 1))]
-        (+ x y)))
+      (let [x (visit .e 0)
+            y (visit .e 1)]
+        (cond (.ADD ctx)
+              (+ x y)
+
+              (.SUB ctx)
+              (- x y))))
 
     (visitInt [ctx]
       (-> ctx .INT .getText (Integer/valueOf)))))

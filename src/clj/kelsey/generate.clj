@@ -18,3 +18,9 @@
            (new ~lexer)
            (new CommonTokenStream)
            (new ~parser))))
+
+(defmacro visit
+  "Visit part of the parse tree.
+  Expects to be defined when `ctx` is in scope as the current context."
+  [& subtree]
+  `(.visit ~'this (-> ~'ctx (~@subtree))))
