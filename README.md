@@ -14,6 +14,8 @@ To walk the tree and add the values:
 
 ## License
 
+foo
+
 Copyright © 2018 Andrew Nichols
 
 Distributed under the Eclipse Public License either version 1.0 or (at
